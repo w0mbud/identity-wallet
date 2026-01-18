@@ -1,6 +1,9 @@
 [package]
 name = "identity-wallet"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 
 [dependencies]
+base64 = "0.22.1"
+ed25519-dalek = "1.0"
+rand = "0.7"
