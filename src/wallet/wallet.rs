@@ -2,17 +2,20 @@ use crate::identity::identity::Identity;
 
 pub struct Wallet {
     identities: Vec<Identity>,
+    active_identity: Option<String>,
 }
 
 #[derive(Debug)]
 pub enum WalletError {
     IdentityAlreadyExists,
+    IdentityNotFound,
 }
 
 impl Wallet {
     pub fn new() -> Self {
         Self {
             identities: Vec::new(),
+            active_identity: None,
         }
     }
 
@@ -35,5 +38,20 @@ impl Wallet {
 
     pub fn contains_identity(&self, name: &str) -> bool {
         self.identities.iter().any(|identity| identity.name == name)
+    }
+
+    pub fn set_active_identity(&mut self, name: &str) -> Result<(), WalletError> {
+        if !self.contains_identity(name) {
+            return Err(WalletError::IdentityNotFound);
+        }
+
+        self.active_identity = Some(name.to_string());
+        Ok(())
+    }
+
+    pub fn active_identity(&self) -> Option<&Identity> {
+        let name = self.active_identity.as_ref()?;
+
+        self.identities.iter().find(|id| &id.name == name)
     }
 }
