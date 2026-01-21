@@ -4,6 +4,11 @@ pub struct Wallet {
     identities: Vec<Identity>,
 }
 
+#[derive(Debug)]
+pub enum WalletError {
+    IdentityAlreadyExists,
+}
+
 impl Wallet {
     pub fn new() -> Self {
         Self {
@@ -11,8 +16,13 @@ impl Wallet {
         }
     }
 
-    pub fn add_identity(&mut self, identity: Identity) {
+    pub fn add_identity(&mut self, identity: Identity) -> Result<(), WalletError> {
+        if self.contains_identity(&identity.name) {
+            return Err(WalletError::IdentityAlreadyExists);
+        }
+
         self.identities.push(identity);
+        Ok(())
     }
 
     pub fn identities(&self) -> &Vec<Identity> {
