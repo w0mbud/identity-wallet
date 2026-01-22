@@ -54,4 +54,21 @@ impl Wallet {
 
         self.identities.iter().find(|id| &id.name == name)
     }
+
+    pub fn remove_identity(&mut self, name: &str) -> Result<(), WalletError>{
+        let index = self
+            .identities
+            .iter()
+            .position(|pos| pos.name == name)
+            .ok_or(WalletError::IdentityNotFound)
+            ?;
+
+        self.identities.remove(index);
+
+        if self.active_identity.as_deref() == Some(name) {
+            self.active_identity = None
+        }
+
+        Ok(())
+    }
 }
